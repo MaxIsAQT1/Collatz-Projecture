@@ -10,7 +10,20 @@
 #include <limits>
 #include <unordered_set>
 
-const int MAX_ITERATIONS = 1000000;  // Safeguard limit for iterations - Todo, move this to user input
+int GetMaxIterations(){
+    int maxIterations;
+
+    for(;;){
+        std::cout << "Enter maximum number of iterations (safeguard limit): ";
+        if(std::cin >> maxIterations && maxIterations > 0){
+            return maxIterations;
+        } else {
+            std::cout << "Invalid input, try again.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+}
 
 int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence, bool safeguardEnabled) {
     std::unordered_set<int> encounteredNumbers;  // Track numbers to detect loops
