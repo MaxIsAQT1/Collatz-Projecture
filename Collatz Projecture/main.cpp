@@ -25,7 +25,7 @@ int GetMaxIterations(){
     }
 }
 
-int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence, bool safeguardEnabled) {
+int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence, bool safeguardEnabled, int maxIterations) {
     std::unordered_set<int> encounteredNumbers;  // Track numbers to detect loops
 
     collatzSequence.push_back(startNumber);  // Start with the initial number
@@ -38,7 +38,7 @@ int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence, b
         iterationCount++;
 
         // Exit if safeguard limit is exceeded
-        if (safeguardEnabled && iterationCount > MAX_ITERATIONS) {
+        if (safeguardEnabled && iterationCount > maxIterations) {
             std::cout << "Max iterations reached. Exiting.\n";
             break;
         }
@@ -81,7 +81,7 @@ int ValidateUserInput(){
 
     for (;;) {
         std::cout << "Enter a number: ";
-        if (std::cin >> inputNumber) {
+        if (std::cin >> inputNumber && inputNumber > 0) {
             return inputNumber;
             break;
         } else {
@@ -117,9 +117,13 @@ int main() {
     std::vector<int> collatzSequence;           // Store the Collatz sequence
     int inputNumber = ValidateUserInput();      // Starting number - Todo, add an option to iterate over numbers, using the set to speed it up
     bool safeguardEnabled = SafeguardEnabled(); // Safeguarding - I have no idea if this works, my fucking build tools dont work in vscode 💀
+    int maxIterations = 0;
 
+    if(safeguardEnabled){
+        maxIterations = GetMaxIterations();
+    }
     // Perform calculations and output the results
-    int totalIterations = ComputeCollatzSequence(inputNumber, collatzSequence, safeguardEnabled);
+    int totalIterations = ComputeCollatzSequence(inputNumber, collatzSequence, safeguardEnabled, maxIterations);
     PrintCollatzResults(collatzSequence, totalIterations);
 
     return 0;
