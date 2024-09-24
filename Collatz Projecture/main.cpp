@@ -10,10 +10,9 @@
 #include <limits>
 #include <unordered_set>
 
-const int MAX_ITERATIONS = 1000000;  // Safeguard limit for iterations
-const bool SAFEGUARD_ENABLED = true; // Enable or disable safeguard
+const int MAX_ITERATIONS = 1000000;  // Safeguard limit for iterations - Todo, move this to user input
 
-int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence) {
+int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence, bool safeguardEnabled) {
     std::unordered_set<int> encounteredNumbers;  // Track numbers to detect loops
 
     collatzSequence.push_back(startNumber);  // Start with the initial number
@@ -26,7 +25,7 @@ int ComputeCollatzSequence(int startNumber, std::vector<int>& collatzSequence) {
         iterationCount++;
 
         // Exit if safeguard limit is exceeded
-        if (SAFEGUARD_ENABLED && iterationCount > MAX_ITERATIONS) {
+        if (safeguardEnabled && iterationCount > MAX_ITERATIONS) {
             std::cout << "Max iterations reached. Exiting.\n";
             break;
         }
@@ -80,12 +79,34 @@ int ValidateUserInput(){
     }
 }
 
+bool SafeguardEnabled(){
+    char input;
+
+    for(;;){
+        std::cout << "Would you like to enable safeguarding? (Y/N)";
+        if(std::cin >> input){
+            if(input == 'Y' || input == 'y'){
+                return true;
+                break;
+            } else if(input == 'N' || input == 'n') {
+                return false;
+                break;
+            } else {
+                std::cout << "Invalid input. Try again,\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            }
+        }
+    }
+}
+
 int main() {
-    std::vector<int> collatzSequence;       // Store the Collatz sequence
-    int inputNumber = ValidateUserInput();  // Starting number
+    std::vector<int> collatzSequence;           // Store the Collatz sequence
+    int inputNumber = ValidateUserInput();      // Starting number - Todo, add an option to iterate over numbers, using the set to speed it up
+    bool safeguardEnabled = SafeguardEnabled(); // Safeguarding - I have no idea if this works, my fucking build tools dont work in vscode 💀
 
     // Perform calculations and output the results
-    int totalIterations = ComputeCollatzSequence(inputNumber, collatzSequence);
+    int totalIterations = ComputeCollatzSequence(inputNumber, collatzSequence, safeguardEnabled);
     PrintCollatzResults(collatzSequence, totalIterations);
 
     return 0;
